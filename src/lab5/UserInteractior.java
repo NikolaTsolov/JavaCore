@@ -1,13 +1,8 @@
 package lab5;
 
-import java.io.BufferedWriter;
+
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -159,12 +154,6 @@ public class UserInteractior {
 		return LocalDate.of(year, month, day);
 	}
 
-	// private void showAllTasks(Task[] tasks) {
-	// for (Task task : tasks) {
-	// System.out.println(task);
-	// }
-	// }
-
 	private Task[] getResultArray(TODOList toDoListSearcher, int chosenOption) {
 		Task[] resultTasksArray = null;
 		switch (chosenOption) {
@@ -186,32 +175,35 @@ public class UserInteractior {
 
 		return resultTasksArray;
 	}
-	
+
 	private void saveToFile(Scanner sc) {
-		if(todoList == null) {
+		if (todoList == null) {
 			throw new NullPointerException();
 		}
-		
-		boolean isFinished = false;
-		while(!isFinished) {
-			try {
-				FileManipulator.CSVWriter(getFilename(sc), todoList.getTasks().toString());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		StringBuilder output = new StringBuilder();
+		for (Task task : todoList.getTasks()) {
+			output.append(task.getTitle()).append(",").append(task.getDescription())
+			.append(",").append(task.getStatus()).append(",").append(task.getPriority())
+			.append(",").append(task.getDeadline()).append("\n");
 		}
 		
+		try {
+			FileManipulator.CSVWriter(getFilename(sc), output.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
-	
+
 	private String getFilename(Scanner sc) {
 		System.out.println("Въведи име на файла");
 		String filename = null;
-		
-		while((filename = sc.nextLine()) == null) {
+
+		while ((filename = sc.nextLine()) == null) {
 			System.out.println("Въведи име на файла");
 		}
-		
+
 		return filename;
 	}
 
@@ -266,7 +258,7 @@ public class UserInteractior {
 						throw new IllegalArgumentException();
 					}
 
-					if (chosenOption == 4 || chosenOption == 6) {
+					if (chosenOption == 4 || chosenOption == 6 || chosenOption == 5) {
 						savingTasksOptions(sc, chosenOption);
 					} else {
 						exitStatus = gettingTasksOptions(chosenOption);

@@ -1,31 +1,28 @@
 package lab5;
 
 import java.io.BufferedReader;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilterOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import lab2.Task;
 import lab2.Task.Statuses;
+
 
 public class FileManipulator {
 
@@ -47,22 +44,25 @@ public class FileManipulator {
 	}
 
 	private static boolean isWithinNHours(LocalDateTime now, LocalDateTime deadline, int timeInHours) {
-		LocalDateTime newDate = deadline.minusHours(timeInHours);
+		LocalDateTime newDate = deadline.plusHours(timeInHours);
 
 		if (now.isAfter(newDate) || now.equals(newDate)) {
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
-	public static void zipper(String filename, String output, LocalDateTime ldt) throws IOException {
+	private static void zipper(String filepath, String output, LocalDateTime ldt) throws IOException {
 
 		StringBuilder destination = new StringBuilder().append(ZIPPER_DESTINATION).append(ldt.getDayOfMonth())
 				.append(".").append(ldt.getMonthValue()).append(".").append(ldt.getYear());
 		Path path = Paths.get(destination.toString());
 		File file = path.toFile();
 		file.mkdirs();
+		String [] dirs = filepath.split("/");
+		String filename = dirs[dirs.length - 1];
+		
 		try (ZipOutputStream zos = new ZipOutputStream(
 				new FileOutputStream(destination.append("/Backup.zip").toString()))) {
 			ZipEntry entry1 = new ZipEntry(filename);
@@ -105,7 +105,8 @@ public class FileManipulator {
 		} else {
 			FileTime ft = Files.getLastModifiedTime(path);
 			LocalDateTime ldt = LocalDateTime.parse(ft.toString().substring(0, ft.toString().length() - 1));
-			if (isWithinNHours(LocalDateTime.now(), ldt, 24)) {
+
+			if (!isWithinNHours(LocalDateTime.now(), ldt, 24)) {
 				String content = fileToString(path.toString());
 				zipper(path.toString(), content, ldt);
 				file.delete();

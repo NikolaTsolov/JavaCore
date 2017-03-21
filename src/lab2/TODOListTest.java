@@ -20,8 +20,8 @@ public class TODOListTest {
 	@Before
 	public void setUp() throws Exception {
 		task1 = new Task("asdf", "asdfh", Statuses.DONE, 5, LocalDate.of(2016, 11, 1));
-		task2 = new Task("fdsa", "gfdsa", Statuses.IN_PROCESS,4, LocalDate.of(2017, 3, 3));
-		task3 = new Task("qwer", "qwert", Statuses.INITIAL, 3, LocalDate.of(2017, 3, 2));
+		task2 = new Task("fdsa", "gfdsa", Statuses.IN_PROCESS,4, LocalDate.now().plusDays(2));
+		task3 = new Task("qwer", "qwert", Statuses.INITIAL, 3, LocalDate.now().plusDays(3));
 		tasks = new Task[]{task3, task2, task1};
 	}
 	
@@ -82,8 +82,8 @@ public class TODOListTest {
 	@Test
 	public void testGetTasksForThreeDays() {
 		TODOList todoList = new TODOList(tasks);
-		Task task4 = new Task("rewq", "trewq", Statuses.IN_PROCESS, 1, LocalDate.of(2017, 2, 28));
-		Task task5 = new Task("rewq", "trewq", Statuses.IN_PROCESS, 2, LocalDate.of(2017, 3, 5));
+		Task task4 = new Task("rewq", "trewq", Statuses.IN_PROCESS, 1, LocalDate.now().plusDays(3));
+		Task task5 = new Task("rewq", "trewq", Statuses.IN_PROCESS, 2, LocalDate.now().plusDays(4));
 		todoList.addTasks(new Task[]{task4, task5});
 		assertArrayEquals(new Task[]{task3, task2, task4}, todoList.getTasksForThreeDays());
 	}

@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import lab2.Task;
-
 public class Analiz {
 
 	private Map<String, Integer> wordHolder;
